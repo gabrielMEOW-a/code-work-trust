@@ -23,6 +23,30 @@ ez::Drive chassis(
 // ez::tracking_wheel horiz_tracker(8, 2.75, 4.0);  // This tracking wheel is perpendicular to the drive wheels
 // ez::tracking_wheel vert_tracker(9, 2.75, 4.0);   // This tracking wheel is parallel to the drive wheels
 
+bool liftOverride = false;
+void roller(void* param) {
+  while (true) {
+    if (master.get_digital_new_press(DIGITAL_R1)) {
+      liftOverride = true;
+      dr4bl.move(-127);
+      dr4br.move(-127);
+      pros::delay(1000);
+      dr4bl.move(0);
+      dr4br.move(0);
+      liftOverride = false;
+    } else if (master.get_digital_new_press(DIGITAL_R2)) {
+      liftOverride = true;
+      dr4bl.move(-127);
+      dr4br.move(-127);
+      pros::delay(2500);
+      dr4bl.move(0);
+      dr4br.move(0);
+      liftOverride = false;
+    }
+    pros::delay(100);
+  }
+}
+
 /**
  * Runs initialization code. This occurs as soon as the program is started.
  *
@@ -35,6 +59,7 @@ void initialize() {
 
   pros::delay(500);  // Stop the user from doing anything while legacy ports configure
 
+  pros::Task be_smart(roller, (void*) "parameter(s) here", "I love being smart");
   // Look at your horizontal tracking wheel and decide if it's in front of the midline of your robot or behind it
   //  - change `back` to `front` if the tracking wheel is in front of the midline
   //  - ignore this if you aren't using a horizontal tracker
@@ -73,6 +98,9 @@ void initialize() {
       {"Boomerang Pure Pursuit\n\nGo to (0, 24, 45) on the way to (24, 24) then come back to (0, 0, 0)", odom_boomerang_injected_pure_pursuit_example},
       {"Measure Offsets\n\nThis will turn the robot a bunch of times and calculate your offsets for your tracking wheels.", measure_offsets},
   });
+
+  dr4bl.set_brake_mode(pros::E_MOTOR_BRAKE_HOLD);
+  dr4br.set_brake_mode(pros::E_MOTOR_BRAKE_HOLD);
 
   // Initialize chassis and auton selector
   chassis.initialize();
@@ -253,13 +281,13 @@ void opcontrol() {
     // chassis.opcontrol_arcade_flipped(ez::SPLIT);    // Flipped split arcade
     // chassis.opcontrol_arcade_flipped(ez::SINGLE);   // Flipped single arcade
 
-    if (master.get_digital(DIGITAL_L1)) {
-      dr4bl.move(-45);
-      dr4br.move(-45);
-    } else if (master.get_digital(DIGITAL_L2)) {
-      dr4bl.move(30);
-      dr4br.move(30);
-    } else {
+    if (!(liftOverride) && master.get_digital(DIGITAL_L1)) {
+      dr4bl.move(-60);
+      dr4br.move(-60);
+    } else if (!(liftOverride) && master.get_digital(DIGITAL_L2)) {
+      dr4bl.move(127);
+      dr4br.move(127);
+    } else if (!(liftOverride)) {
       dr4bl.move(0);
       dr4br.move(0);
     }
