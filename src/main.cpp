@@ -271,6 +271,10 @@ void opcontrol() {
   // This is preference to what you like to drive on
   chassis.drive_brake_set(MOTOR_BRAKE_COAST);
 
+  bool c = false;
+  bool cR = false;
+  bool cT = false;
+
   while (true) {
     // Gives you some extras to make EZ-Template ezier
     ez_template_extras();
@@ -291,6 +295,17 @@ void opcontrol() {
       dr4bl.move(0);
       dr4br.move(0);
     }
+
+    if (master.get_digital(DIGITAL_UP)) {
+      c = !c;
+      claw.set_value(c);
+    } if (master.get_digital(DIGITAL_RIGHT)) {
+      cR = !cR;
+      clawRotate.set_value(cR);
+    } if (master.get_digital(DIGITAL_DOWN)) {
+      cT = !cT;
+      clawTip.set_value(cT);
+    } 
 
     // . . .
     // Put more user control code here!
