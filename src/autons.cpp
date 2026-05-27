@@ -48,6 +48,12 @@ void default_constants() {
   chassis.pid_angle_behavior_set(ez::shortest);  // Changes the default behavior for turning, this defaults it to the shortest path there
 }
 
+void autononomousoverride() {
+  clawTip.set_value(false);
+  chassis.pid_drive_set(10_in, DRIVE_SPEED, true);
+  claw.set_value(true);
+}
+
 ///
 // Drive Example
 ///
