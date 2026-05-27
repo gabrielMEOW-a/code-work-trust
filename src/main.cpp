@@ -59,7 +59,7 @@ void initialize() {
 
   pros::delay(500);  // Stop the user from doing anything while legacy ports configure
 
-  pros::Task be_smart(roller, (void*) "parameter(s) here", "I love being smart");
+  // pros::Task be_smart(roller, (void*) "parameter(s) here", "I love being smart");
   // Look at your horizontal tracking wheel and decide if it's in front of the midline of your robot or behind it
   //  - change `back` to `front` if the tracking wheel is in front of the midline
   //  - ignore this if you aren't using a horizontal tracker
@@ -296,13 +296,13 @@ void opcontrol() {
       dr4br.move(0);
     }
 
-    if (master.get_digital(DIGITAL_UP)) {
+    if (master.get_digital_new_press(DIGITAL_R1)) {
       c = !c;
       claw.set_value(c);
-    } if (master.get_digital(DIGITAL_RIGHT)) {
+    } if (master.get_digital_new_press(DIGITAL_LEFT) || master.get_digital_new_press(DIGITAL_RIGHT) || master.get_digital_new_press(DIGITAL_UP) || master.get_digital_new_press(DIGITAL_DOWN) || master.get_digital_new_press(DIGITAL_X) || master.get_digital_new_press(DIGITAL_Y) || master.get_digital_new_press(DIGITAL_A) || master.get_digital_new_press(DIGITAL_B)) {
       cR = !cR;
       clawRotate.set_value(cR);
-    } if (master.get_digital(DIGITAL_DOWN)) {
+    } if (master.get_digital_new_press(DIGITAL_R2)) {
       cT = !cT;
       clawTip.set_value(cT);
     } 
