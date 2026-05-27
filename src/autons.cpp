@@ -49,13 +49,9 @@ void default_constants() {
 }
 
 void autononomousoverride() {
-
-  chassis.pid_drive_set(48_in, 70, true);
-  chassis.pid_wait(2000);
-  chassis.pid_turn_set(-135_deg, TURN_SPEED);
-  chassis.pid_wait(1000);
-  chassis.pid_drive_set(34_in, 70, true);
-  chassis.pid_wait(2000);
+  clawTip.set_value(false);
+  chassis.pid_drive_set(10_in, DRIVE_SPEED, true);
+  claw.set_value(true);
 }
 
 ///
